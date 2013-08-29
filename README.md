@@ -1,12 +1,82 @@
 # Goodall
 
 Goodall provides an easy interface for documenting your API while you
-write your tests.
+write your integration tests.
 
 It is compatible with Rspec, Cucumber and test-unit, as well as others.
 
 Goodall is named after Jane Goodall who has spent her life observing and
 documenting the behviour of chimpanzees.
+
+## Purpose
+
+Goodall is a gemified version of the ideas in outlined a few years ago in
+this blog post: http://n4k3d.com/blog/2011/08/19/generate-easy-up-to-date-rails-api-docs-with-cucumber/
+
+The basic idea is that you are writing integration tests anyway, you are 90%
+there. All that was left was to record the requests and responses to a text
+file.  For example, the following cucumber test:
+
+```
+  Feature: /widgets
+    Scenario: Get a list of all widgets
+      Given the following widget exists:
+        | name             | job         |
+        | Billy the Widget | Be a widget |
+        | Sally the Widget | Be a widget |
+      When I GET "/widgets"
+      Then I should get a successful response
+      And the response should include 2 widgets
+      And the response should include the Widget data for "Billy the Widget"
+      And the response should include the Widget data for "Sally the Widget"
+
+    Scenario: Create a new widget
+      Given I have a JSON request for "widget"
+        | name | Bob the Widget |
+        | job  | Be a widget    |
+      And I POST that JSON to "/widgets.json"
+      Then I should get a successful response
+      And the response should include the Widget data for "Bob the Widget"
+```
+
+.. would then generate the following documentation:
+
+```
+  ——————————————————————————–
+  Feature: /widgets
+
+  Scenario: Get a list of all widgets
+  GET /widgets.json
+  RESPONSE:
+  {
+    "widgets" : [
+      {
+        "name" : "Billy the Widget",
+        "job" : "Be a widget"
+      },
+      {
+        "name" : "Sally the Widget",
+        "job" : "Be a widget"
+      }
+    ]
+  }
+
+  Scenario: Create a new widget
+  POST /widgets.json:
+  {
+    "widget" : {
+      "name" : "Bob the Widget",
+      "job" : "Be a widget"
+    }
+  }
+  RESPONSE:
+  {
+    "widget" : {
+      "name" : "Billy the Widget",
+      "job" : "Be a widget"
+    }
+  }
+```
 
 ## Installation
 
