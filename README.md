@@ -201,7 +201,7 @@ Or install it yourself as:
   ```  
 
   You will also need to set the path of the file for output. If you choose
-  not the set this, the default will be used which is "./doc/api_docs.txt".
+  not the set this, the default will be used which is "./api_docs.txt".
   You can override this by:
 
   ```
@@ -255,15 +255,18 @@ to swap "goodall/handler/json" with "goodall/handler/xml" then the response
 would be assumed to be XML.
 
 If you need to use both formats at the same time, you can include both
-handlers and the reference them directly by name.
+handlers and set the actuve handler by name.
 
 ```
   require 'goodall'
   require 'goodall/handler/json'
   require 'goodall/handler/xml'
 
-  Goodall.json_handler.document_response(response.body)
-  Goodall.xml_handler.document_response(response.body)
+  Goodall.set_handler(:json)
+  Goodall.document_response(response.body) # json response
+
+  Goodall.set_handler(:xml)
+  Goodall.document_response(response.body) # xml response
 ```
 
 In the above case, the default handler would be XML since it was required
