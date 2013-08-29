@@ -3,9 +3,11 @@
 Goodall provides an easy interface for documenting your API while you
 write your integration tests.
 
-It is compatible with Rspec, Cucumber and test-unit, as well as others.
+It is compatible with Rspec, Cucumber and test-unit, as well as others. It
+currently supports JSON and XML APIs, but modules can be easily written to
+handler other types.
 
-Goodall is named after Jane Goodall who has spent her life observing and
+Goodall is named after researcher Jane Goodall, who has spent her life observing and
 documenting the behviour of chimpanzees.
 
 ## Purpose
@@ -17,7 +19,7 @@ The basic idea is that you are writing integration tests anyway, you are 90%
 there. All that was left was to record the requests and responses to a text
 file.  For example, the following cucumber test:
 
-```
+```cucumber
   Feature: /widgets
     Scenario: Get a list of all widgets
       Given the following widget exists:
@@ -97,8 +99,7 @@ Or install it yourself as:
 ### Cucumber
 
   In your *env.rv* file, require 'goodall/cucumber' and either of the JSON
-  or XML handlers. Or both, if you need them. Then add Goodall to the
-  accessible-methods list.
+  or XML handlers. Or both, if you need them.
 
   ```ruby
     # env.rb
@@ -111,7 +112,7 @@ Or install it yourself as:
   it is best if you have the request-dispatching and response-parsing in
   central places that are re-used:
 
-  ```
+  ```Cucumber
     # something.feature
     Given I get "/some/api.json"
     Then the response should should include "blah"
@@ -155,7 +156,7 @@ Or install it yourself as:
   For controller specs, re-use can be acheived by making a delegation method
   for the get/post/put/delete/patch verbs:
 
-  ```
+  ```ruby
     # spec_helper.rb
 
     def documented_get(*args)
@@ -182,7 +183,7 @@ Or install it yourself as:
   log, please set the environment variable 'ENABLE_GOODALL' to a non-nil
   value. For example:
 
-  ```
+  ```shell
     ENABLE_GOODALL=true rspec spec/
   ```
 
@@ -202,7 +203,7 @@ Or install it yourself as:
   not the set this, the default will be used which is "./api_docs.txt".
   You can override this by:
 
-  ```
+  ```ruby
     Goodall.output_path = "./some/path/file.txt"
   ```
 
@@ -210,7 +211,7 @@ Or install it yourself as:
   disabled by default, which means that Goodall will not document unless
   explicity told to do so. You can enable logging with
 
-  ```
+  ```ruby
     Goodall.enabled = true
   ```
 
@@ -226,7 +227,7 @@ Or install it yourself as:
 
   This unlocks the following rake commands:
 
-  ```
+  ```shell
     rake cucumber:document
     rake spec:document
   ```
@@ -240,12 +241,11 @@ to the documention file.
 If only one handler is required in your config, Goodall assumes you want to
 use that one all the time.  For example:
 
-```
+```ruby
   require 'goodall'
   require 'goodall/handler/json'
 
   Goodall.document_reponse(response.body)
-
 ```
 
 ..will assume *response.body* is JSON and will parse it as such. If you were
@@ -255,7 +255,7 @@ would be assumed to be XML.
 If you need to use both formats at the same time, you can include both
 handlers and set the actuve handler by name.
 
-```
+```ruby
   require 'goodall'
   require 'goodall/handler/json'
   require 'goodall/handler/xml'
