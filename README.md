@@ -104,8 +104,6 @@ Or install it yourself as:
     # env.rb
     require 'goodall/cucumber'
     require 'goodall/handler/json' # or/and 'goodall/handler/xml'
-
-    World(Goodall)
   ```
 
   In your features, where you want to log a request or response, call either
