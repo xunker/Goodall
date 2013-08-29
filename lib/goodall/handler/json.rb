@@ -9,12 +9,18 @@ module Goodall
       def parse_payload(payload)
         payload = if payload.class == String
           # assue it's a string of json
-          MultiJson.load(payload)
+          begin
+            MultiJson.load(payload)
+          rescue MultiJson::LoadError
+            # probably not JSON, return as-is
+            return payload+"\n"
+          end
         else
           payload
         end
   
-        MultiJson.dump(payload, :pretty => true)
+        # return an remove prefix CR
+        MultiJson.dump(payload, :pretty => true).sub(/^\n/, '')
       
       end
     end

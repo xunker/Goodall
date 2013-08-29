@@ -47,14 +47,14 @@ module Goodall
     def self.document_request(method, path, payload)
       return unless enabled?
 
-      if payload
-        payload = current_handler.parse_payload(payload)
+      str = "#{method.to_s.upcase}: #{path}"
+
+      if payload && payload.to_s.size > 0
+        str << "\n" + current_handler.parse_payload(payload)
       end
 
-      str = "#{method.to_s.upcase}: #{path}\n"
+      str << "\n"
     
-      str << payload if payload
-
       writer.write(str)
     end
 
@@ -65,9 +65,9 @@ module Goodall
         payload = current_handler.parse_payload(payload)
       end
 
-      str = "RESPONSE:\n#{payload}"
+      str = "RESPONSE:\n#{payload}\n"
 
-      writer.output(str)
+      writer.write(str)
     end
 
     at_exit do
