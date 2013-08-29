@@ -1,4 +1,5 @@
 require 'goodall'
+require 'goodall/command_line_enable'
 
 Before do |scenario|
   if scenario.feature != $current_feature

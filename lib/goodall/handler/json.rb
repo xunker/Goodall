@@ -19,7 +19,7 @@ module Goodall
           payload
         end
   
-        # return an remove prefix CR
+        # remove prefix CR and return data
         MultiJson.dump(payload, :pretty => true).sub(/^\n/, '')
       
       end

@@ -3,6 +3,7 @@ require "goodall/version"
 require "goodall/errors"
 require "goodall/writer"
 
+
 module Goodall
   class Logger
     include Singleton

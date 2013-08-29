@@ -160,9 +160,10 @@ Or install it yourself as:
     # spec_helper.rb
 
     def documented_get(*args)
-      get(args)
       Goodall.document_request(:get, args[0])
+      get_response = get(args)
       Goodall.document_response(response.body)
+      get_response
     end
 
     # some_controller_spec.rb
@@ -170,7 +171,7 @@ Or install it yourself as:
       describe "GET foo" do
         it "should return a body containing 'blah'" do
 
-          documented_get :foo
+          documented_get(:foo) # replaces get(:foo)
           expect(response.body).to include?('blah')
 
         end
@@ -269,6 +270,22 @@ handlers and set the actuve handler by name.
 
 In the above case, the default handler would be XML since it was required
 last.
+
+### Writing new handlers
+
+Please see *lib/goodall/handler/json.rb* for a good example. A handler will
+need to do two things:
+
+**Impliment #parse_payload**: accepts a data structure and is expected to
+return a pretty-printed string representing that data.
+
+**Register itself as a handler**: This is done by calling:
+  
+  ```ruby
+    Goodall::Logger.register_handler(:handler_name, self)
+  ```
+..where *:handler_name* is a **symbol** for what type of data is being
+handled, and self is the **class** of the handler.
 
 ## Contributing
 
