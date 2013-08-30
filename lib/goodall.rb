@@ -52,13 +52,12 @@ class Goodall
     writer.write(str) if enabled?
   end
 
-
   # Document a request.
   #
   # * +:method+ - a symbol of the verb: :get, :post, :put, :delete, :patch
   # * +:path+   - a string of the path (URL/URI) of the request
   # * +:payload+ - the parameters sent, e.g. post body. Usually a hash.
-  def self.document_request(method, path, payload)
+  def self.document_request(method, path, payload=nil)
     return unless enabled?
 
     str = "#{method.to_s.upcase}: #{path}"
