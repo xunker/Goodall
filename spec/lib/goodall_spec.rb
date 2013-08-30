@@ -70,7 +70,7 @@ describe Goodall do
         let(:mock_payload) { '{ "foo" : "bar" }' }
 
         let(:formatted_payload) do
-          MultiJson::Adapters::JsonCommon.dump(mock_payload)
+          "{\n  \"foo\" : \"bar\"\n}\n"
         end
 
         before(:each) do
@@ -133,7 +133,7 @@ describe Goodall do
       let(:mock_payload) { '{ "foo" : "bar" }' }
 
       let(:formatted_payload) do
-        MultiJson::Adapters::JsonCommon.dump(mock_payload)
+        "{\n  \"foo\" : \"bar\"\n}\n"
       end
 
       before(:each) do
