@@ -1,5 +1,8 @@
 require "goodall/handler/base"
 
+# This sucks.
+# It needs love from someone who knows xml. That's not me.
+
 class Goodall
   module Handler
     class Xml < Base

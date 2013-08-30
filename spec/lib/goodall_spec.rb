@@ -76,10 +76,13 @@ describe Goodall do
         before(:each) do
           klass.enable
 
-          mock_handler
-            .stub(:parse_payload)
-            .with(mock_payload)
-            .and_return(formatted_payload)
+          mock_handler.stub(
+            :parse_payload
+          ).with(
+            mock_payload
+          ).and_return(
+            formatted_payload
+          )
 
           klass.stub(:current_handler).and_return(mock_handler)
           klass.stub(:writer).and_return(mock_writer)
@@ -136,10 +139,13 @@ describe Goodall do
       before(:each) do
         klass.enable
 
-        mock_handler
-          .stub(:parse_payload)
-          .with(mock_payload)
-          .and_return(formatted_payload)
+        mock_handler.stub(
+          :parse_payload
+        ).with(
+          mock_payload
+        ).and_return(
+          formatted_payload
+        )
 
         klass.stub(:current_handler).and_return(mock_handler)
         klass.stub(:writer).and_return(mock_writer)
