@@ -108,14 +108,15 @@ or XML handlers. Or both, if you need them.
 ```
 
 In your features, where you want to log a request or response, call either
-*Goodall.document_request* or *Goodall.document_response*. For cucumber,
-it is best if you have the request-dispatching and response-parsing in
-central places that are re-used:
+*Goodall.document_request* or *Goodall.document_response*.
+
+For cucumber, the best way is to have often-reused methods in each scenario, and then put the Goodall methods call in those. Take this example feature:
 
 ```Cucumber
   # something.feature
   Given I get "/some/api.json"
-  Then the response should should include "blah"
+  Then the response should be valid json
+  And the response should should be successful
 
   # something_steps.rb
 
@@ -124,14 +125,19 @@ central places that are re-used:
     Goodall.document_request(:get, path)
   end
 
-  Given /^the response should include \"(.+)\"$/ do |keyword|
-    last_response.body.should include(keyword)
+  Given /^the response should be valid json$/ do
     Goodall.document_response(last_response.body)
+    @json_response = MultiJson.load(last_response.body)
+  end
+
+  Given /^the response should be successul$/ do
+    @last_response['success'].should be_true
   end
 ```
 
-For API testing, steps like these will be re-used often, so the amount of
-Goodall calls should be mininal.
+The steps "I get (.+)" and "the response should be valid json" are steps I
+will use in almost every scenario, so it is the perfect place for the Goodall
+calls. Using Goodall in these frequently used steps is key for ease-of-use.
 
 _IMPORTANT NOTE_: Using the cucumber helpers, Goodall will NOT log unless
 executed via the rake task "rake cucumber:document". To force Goodall to
@@ -280,7 +286,7 @@ last.
 Please see *lib/goodall/handler/json.rb* for a good example. A handler will
 need to do two things:
 
-**Impliment #parse_payload**: accepts a data structure and is expected to
+**Implement #parse_payload**: accepts a data structure and is expected to
 return a pretty-printed string representing that data.
 
 **Register itself as a handler**: This is done by calling:
