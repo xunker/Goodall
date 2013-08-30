@@ -61,7 +61,7 @@ describe Goodall do
   end
 
   describe ".document_request" do
-    context "Goodal is enabled" do
+    context "Goodall is enabled" do
 
       context "post with payload" do
 
@@ -103,7 +103,7 @@ describe Goodall do
           "GET: /foo/bar\n"
         end
 
-        it "must send a formatted response to the writer" do
+        it "must send a formatted request to the writer" do
           expect(mock_writer).to receive(:write).with(expected_write)
 
           klass.document_request(:get, '/foo/bar')
@@ -112,12 +112,54 @@ describe Goodall do
 
     end
 
-    context "Goodal is not enabled" do
+    context "Goodall is not enabled" do
       before(:each) { klass.disable }
       it "must silently return without writing" do
         mock_writer.should_not_receive(:write)
 
         klass.document_request(:foo, 'bar', { :baz => :baz })
+      end
+    end
+  end
+
+  describe ".document_response" do
+    context "Goodall is enabled" do
+
+      let(:mock_payload) { '{ "foo" : "bar" }' }
+
+      let(:formatted_payload) do
+        "{\n  \"foo\" : \"bar\"\n}\n"
+      end
+
+      before(:each) do
+        klass.enable
+
+        mock_handler
+          .stub(:parse_payload)
+          .with(mock_payload)
+          .and_return(formatted_payload)
+
+        klass.stub(:current_handler).and_return(mock_handler)
+        klass.stub(:writer).and_return(mock_writer)
+      end
+
+      let(:expected_write) do
+        "RESPONSE:\n#{formatted_payload}\n"
+      end
+
+      it "must send a formatted response to the writer" do
+        expect(mock_writer).to receive(:write).with(expected_write)
+
+        klass.document_response(mock_payload)
+      end
+    end
+
+    context "Goodall is not enabled" do
+      before(:each) { klass.disable }
+      it "must silently return without writing" do
+        mock_writer.should_not_receive(:write)
+
+        klass.document_response({ :baz => :baz })
       end
     end
   end
