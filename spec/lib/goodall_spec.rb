@@ -8,6 +8,8 @@ describe Goodall do
 
   let(:mock_handler) { double(:mock_handler) }
 
+  let(:mock_new_handler) { double(:mock_new_handler) }
+
   before(:each) do
     Goodall.stub(:writer).and_return(mock_writer)
   end
@@ -160,6 +162,41 @@ describe Goodall do
         mock_writer.should_not_receive(:write)
 
         klass.document_response({ :baz => :baz })
+      end
+    end
+  end
+
+  describe ".register_handler" do
+    it "should add a handler class to the list of registered handlers" do
+      klass.register_handler(:foo_register_test, mock_new_handler)
+
+      expect(klass.registered_handlers).to include([:foo_register_test, mock_new_handler])
+    end
+  end
+
+  describe ".set_handler" do
+    context "handler is registered" do
+      it "should set that handler as the current active handler" do
+        foo_handler_instance = double(:foo_handler_instance)
+        foo_handler_class = double(:foo_handler_class, :new => foo_handler_instance)
+        bar_handler_instance = double(:bar_handler_instance)
+        bar_handler_class = double(:bar_handler_class, :new => bar_handler_instance)
+        
+        klass.register_handler(:foo, foo_handler_class)
+        klass.register_handler(:bar, bar_handler_class)
+
+        klass.set_handler(:foo)
+        expect(klass.send(:current_handler)).to eq(foo_handler_instance)
+
+        klass.set_handler(:bar)
+        expect(klass.send(:current_handler)).to eq(bar_handler_instance)
+      end
+    end
+    context "handler is not registered" do
+      it "should raise HandlerNotRegisteredError" do
+        expect{
+          klass.set_handler(:invalid)
+        }.to raise_error(Goodall::HandlerNotRegisteredError)
       end
     end
   end

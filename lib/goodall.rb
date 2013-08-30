@@ -101,7 +101,9 @@ class Goodall
     @@registered_handlers[payload_type.to_sym] = handler_class
   end
 
-  # Set the currently active handler. By default, if only one handler is registered then it will be made active by default. If you hanve multiple handlers registered and wish to switch between them, use this.
+  # Set the currently active handler. By default, if only one handler is
+  # registered then it will be made active by default. If you hanve multiple
+  # handlers registered and wish to switch between them, use this.
   #
   # * +:handler_name+ - Handler name as a symbol, e.g. :json, :xml.
   def self.set_handler(handler_name)
@@ -111,6 +113,13 @@ class Goodall
     else
       raise HandlerNotRegisteredError, "No handler registered for for #{handler_name}"
     end
+  end
+
+  # returns an array of arrays of the currently registered handlers.
+  #
+  # [ [ :identifier, class ], [ :identifier, class ] ]
+  def self.registered_handlers
+    @@registered_handlers.map{|k,v| [k,v]}
   end
 
 private
