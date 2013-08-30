@@ -8,11 +8,19 @@ describe Goodall::Handler::Json do
       context 'string is valid json' do
 
         let(:valid_json_string) { '{"foo":"bar"}' }
-        
+
+        let(:formatted_output) do
+          if Goodall::Handler::Json.pretty_print_supported?
+            "{\n  \"foo\": \"bar\"\n}"
+          else
+            "{\"foo\":\"bar\"}"
+          end
+        end
+
         it 'should return it as pretty-printed json' do
           expect(
             subject.parse_payload(valid_json_string)
-          ).to eq("{\n  \"foo\": \"bar\"\n}")
+          ).to eq(formatted_output)
         end        
       end
       context 'the string not valid json' do
@@ -31,10 +39,18 @@ describe Goodall::Handler::Json do
 
       let(:payload) { { :foo => :bar } }
 
+      let(:formatted_output) do
+        if Goodall::Handler::Json.pretty_print_supported?
+          "{\n  \"foo\": \"bar\"\n}"
+        else
+          "{\"foo\":\"bar\"}"
+        end
+      end
+
       it 'should return it as pretty-printed json' do
         expect(
             subject.parse_payload(payload)
-          ).to eq("{\n  \"foo\": \"bar\"\n}")
+          ).to eq(formatted_output)
       end
     end
   end

@@ -1,1 +1,2 @@
 rvm --create use 1.9.3@goodall
+#rvm --create use ree@goodall
