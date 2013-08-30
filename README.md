@@ -84,154 +84,158 @@ file.  For example, the following cucumber test:
 
 Add this line to your application's Gemfile:
 
-    gem 'goodall'
+  gem 'goodall'
 
 And then execute:
 
-    $ bundle
+  $ bundle
 
 Or install it yourself as:
 
-    $ gem install goodall
+  $ gem install goodall
 
 ## Usage
 
 ### Cucumber
 
-  In your *env.rv* file, require 'goodall/cucumber' and either of the JSON
-  or XML handlers. Or both, if you need them.
+In your *env.rv* file, require 'goodall/cucumber' and either of the JSON
+or XML handlers. Or both, if you need them.
 
-  ```ruby
-    # env.rb
-    require 'goodall/cucumber'
-    require 'goodall/handler/json' # or/and 'goodall/handler/xml'
-  ```
+```ruby
+  # env.rb
+  require 'goodall/cucumber'
+  require 'goodall/handler/json' # or/and 'goodall/handler/xml'
+```
 
-  In your features, where you want to log a request or response, call either
-  *Goodall.document_request* or *Goodall.document_response*. For cucumber,
-  it is best if you have the request-dispatching and response-parsing in
-  central places that are re-used:
+In your features, where you want to log a request or response, call either
+*Goodall.document_request* or *Goodall.document_response*. For cucumber,
+it is best if you have the request-dispatching and response-parsing in
+central places that are re-used:
 
-  ```Cucumber
-    # something.feature
-    Given I get "/some/api.json"
-    Then the response should should include "blah"
+```Cucumber
+  # something.feature
+  Given I get "/some/api.json"
+  Then the response should should include "blah"
 
-    # something_steps.rb
+  # something_steps.rb
 
-    Given /^I get \"(.+)\"$/ do |path|
-      get(path)
-      Goodall.document_request(:get, path)
-    end
+  Given /^I get \"(.+)\"$/ do |path|
+    get(path)
+    Goodall.document_request(:get, path)
+  end
 
-    Given /^the response should include \"(.+)\"$/ do |keyword|
-      last_response.body.should include(keyword)
-      Goodall.document_response(last_response.body)
-    end
-  ```
+  Given /^the response should include \"(.+)\"$/ do |keyword|
+    last_response.body.should include(keyword)
+    Goodall.document_response(last_response.body)
+  end
+```
 
-  For API testing, steps like these will be re-used often, so the amount of
-  Goodall calls should be mininal.
+For API testing, steps like these will be re-used often, so the amount of
+Goodall calls should be mininal.
 
-  _IMPORTANT NOTE_: Using the cucumber helpers, Goodall will NOT log unless
-  executed via the rake task "rake cucumber:document". To force Goodall to
-  log, please set the environment variable 'ENABLE_GOODALL' to a non-nil
-  value. For example:
+_IMPORTANT NOTE_: Using the cucumber helpers, Goodall will NOT log unless
+executed via the rake task "rake cucumber:document". To force Goodall to
+log, please set the environment variable 'ENABLE_GOODALL' to a non-nil
+value. For example:
 
-  ```
-    ENABLE_GOODALL=true cucumber features/
-  ```
+```
+  ENABLE_GOODALL=true cucumber features/
+```
 
 ### Rspec
 
-  In your *spec_helper.rb* file, require 'goodall/rspec' and either of the
-  JSON or XML handlers. Or both, if you need them.
+In your *spec_helper.rb* file, require 'goodall/rspec' and either of the
+JSON or XML handlers. Or both, if you need them.
 
-  ```ruby
-    # spec_helper.rb
-    require 'goodall/rspec'
-    require 'goodall/handler/json' # or/and 'goodall/handler/xml'
-  ```
+```ruby
+  # spec_helper.rb
+  require 'goodall/rspec'
+  require 'goodall/handler/json' # or/and 'goodall/handler/xml'
+```
 
-  For controller specs, re-use can be acheived by making a delegation method
-  for the get/post/put/delete/patch verbs:
+For controller specs, re-use can be acheived by making a delegation method
+for the get/post/put/delete/patch verbs:
 
-  ```ruby
-    # spec_helper.rb
+```ruby
+  # spec_helper.rb
 
-    def documented_get(*args)
-      Goodall.document_request(:get, args[0])
-      get_response = get(args)
-      Goodall.document_response(response.body)
-      get_response
-    end
+  def documented_get(*args)
+    Goodall.document_request(:get, args[0])
+    get_response = get(args)
+    Goodall.document_response(response.body)
+    get_response
+  end
 
-    # some_controller_spec.rb
-    describe SomeController do
-      describe "GET foo" do
-        it "should return a body containing 'blah'" do
+  # some_controller_spec.rb
+  describe SomeController do
+    describe "GET foo" do
+      it "should return a body containing 'blah'" do
 
-          documented_get(:foo) # replaces get(:foo)
-          expect(response.body).to include?('blah')
+        documented_get(:foo) # replaces get(:foo)
+        expect(response.body).to include?('blah')
 
-        end
       end
     end
-  ```
+  end
+```
 
-  _IMPORTANT NOTE_: Using the rspec helpers, Goodall will NOT log unless
-  executed via the rake task "rake rspec:document". To force Goodall to
-  log, please set the environment variable 'ENABLE_GOODALL' to a non-nil
-  value. For example:
+_IMPORTANT NOTE_: Using the rspec helpers, Goodall will NOT log unless
+executed via the rake task "rake rspec:document". To force Goodall to
+log, please set the environment variable 'ENABLE_GOODALL' to a non-nil
+value. For example:
 
-  ```shell
-    ENABLE_GOODALL=true rspec spec/
-  ```
+```shell
+  ENABLE_GOODALL=true rspec spec/
+```
 
 ### Test Unit and derivatives, and others
 
-  If you are not using any of the convenience wrappers for rspec or cucumber,
-  there is more work to be done when using Goodall.
+If you are not using any of the convenience wrappers for rspec or cucumber,
+there is more work to be done when using Goodall.
 
-  First, like others, require the files:
+First, like others, require the files:
 
-  ```ruby
-    require 'goodall'
-    require 'goodall/handler/json' # or/and 'goodall/handler/xml'
-  ```  
+```ruby
+  require 'goodall'
+  require 'goodall/handler/json' # or/and 'goodall/handler/xml'
+```  
 
-  You will also need to set the path of the file for output. If you choose
-  not the set this, the default will be used which is "./api_docs.txt".
-  You can override this by:
+You will also need to set the path of the file for output. If you choose
+not the set this, the default will be used which is "./api_docs.txt".
+You can override this by:
 
-  ```ruby
-    Goodall.output_path = "./some/path/file.txt"
-  ```
+```ruby
+  Goodall.output_path = "./some/path/file.txt"
+```
 
-  Enabing the logging process involves setting the *enabled* property. It is
-  disabled by default, which means that Goodall will not document unless
-  explicity told to do so. You can enable logging with
+Enabing the logging process involves setting the *enabled* property. It is
+disabled by default, which means that Goodall will not document unless
+explicity told to do so. You can enable logging with
 
-  ```ruby
-    Goodall.enabled = true
-  ```
+```ruby
+  Goodall.enabled = true
+```
 
 ### Rake task
 
-  To automate the creation of documentation, a rake task can be added that
-  automatically set the output file and triggers the tests.
+To automate the creation of documentation, a rake task can be added that
+automatically set the output file and triggers the tests.
 
-  ```ruby
-    require 'goodall/rake_task'
-    Goodall::RakeTask.new(:spec)
-  ```
+```ruby
+  # Rakefile
+  require 'goodall/rake_task'
+```
 
-  This unlocks the following rake commands:
+This unlocks the following rake commands:
 
-  ```shell
-    rake cucumber:document
-    rake spec:document
-  ```
+```shell
+  rake cucumber:document   # Run cucumber and write Goodall documentation
+  rake spec:document       # Run rspec tests and write Goodall documentation
+  rake goodall:output_path # Show current Goodall documentation output path
+```
+
+By default, the output path will be 'doc/api_docs.txt' when run with this
+rake task.
 
 ## Handlers
 
@@ -286,6 +290,10 @@ return a pretty-printed string representing that data.
   ```
 ..where *:handler_name* is a **symbol** for what type of data is being
 handled, and self is the **class** of the handler.
+
+## Methods
+
+Documented with rdoc.
 
 ## Contributing
 

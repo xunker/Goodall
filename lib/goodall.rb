@@ -3,23 +3,27 @@ require "goodall/version"
 require "goodall/errors"
 require "goodall/writer"
 
+require 'goodall/rake_task' if defined?(Rails)
 
 module Goodall
   class Logger
     include Singleton
 
-    @@enabled = false
-    @@output_path = './api_docs.txt'
-    @@registered_handlers = {}
+    @@enabled = false                #:nodoc:
+    @@output_path = './api_docs.txt' #:nodoc:
+    @@registered_handlers = {}       #:nodoc:
     
+    # Get the current documentation output path
     def self.output_path
       @@output_path
     end
 
+    # Set the current documentation output path
     def self.output_path=(val)
       @@output_path = val
     end
 
+    # Is Goodall logging enabled?
     def self.enabled
       @@enabled
     end
@@ -29,22 +33,32 @@ module Goodall
       enabled
     end
 
+    # Explicity set the enabled state, true or false
     def self.enabled=(val)
       @@enabled=!!val
     end
 
+    # Enable Goodall, which is disabled by default.
     def self.enable
       self.enabled=true
     end
 
+    # Enable Goodall, which is the default by default.
     def self.disable
       self.enabled = false
     end
 
+    # write to the currently open output file
     def self.write(str)
       writer.write(str) if enabled?
     end
 
+
+    # Document a request.
+    #
+    # * +:method+ - a symbol of the verb: :get, :post, :put, :delete, :patch
+    # * +:path+   - a string of the path (URL/URI) of the request
+    # * +:payload+ - the parameters sent, e.g. post body. Usually a hash.
     def self.document_request(method, path, payload)
       return unless enabled?
 
@@ -59,6 +73,9 @@ module Goodall
       writer.write(str)
     end
 
+    # Document a response.
+    #
+    # * +:payload - the data returned from the request, e.g. response.body. `payload` will be run through the current handler and be pretty-printed to the output file.
     def self.document_response(payload)
       return unless enabled?
 
@@ -77,10 +94,18 @@ module Goodall
       end
     end
 
+    # When writing a custom hander, it must register itself with Goodall using
+    # this method.
+    #
+    # * +:payload_type+ - The name of the kind of content that this handler will be processing, e.g. JSON, XML, HTML etc.
+    # * +:handler_class+ - The class of the handler itself (not the class name).
     def self.register_handler(payload_type, handler_class)
       @@registered_handlers[payload_type.to_sym] = handler_class
     end
 
+    # Set the currently active handler. By default, if only one handler is registered then it will be made active by default. If you hanve multiple handlers registered and wish to switch between them, use this.
+    #
+    # * +:handler_name+ - Handler name as a symbol, e.g. :json, :xml.
     def self.set_handler(handler_name)
       handler_name = handler_name.to_sym
       if handler_class = @@registered_handlers[handler_name]
