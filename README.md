@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/xunker/Goodall.png?branch=master)](https://travis-ci.org/xunker/Goodall)
 # Goodall
 
 Goodall provides an easy interface for documenting your API while you
