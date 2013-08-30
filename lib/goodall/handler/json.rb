@@ -45,14 +45,14 @@ class Goodall
 
         indent_level = 0
         str.split("\n").each do |s|
-          indent_level -= 1 if ["]", "}"].include?(s[0]) && indent_level > 0
+          indent_level -= 1 if ["]", "}"].include?(s.split('').first) && indent_level > 0
           output << ("  "*indent_level) + s
-          if ["{", "["].include?(s[-1])
+          if ["{", "["].include?(s.split('').last)
             indent_level += 1 
             next
           end
 
-          if ["{", "["].include?(s[0])
+          if ["{", "["].include?(s.split('').first)
             indent_level += 1 
             next
           end
