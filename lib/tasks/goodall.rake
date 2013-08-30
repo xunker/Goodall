@@ -18,7 +18,7 @@ def goodall_output_path
   if running_under_rails?
     "#{Rails.root}/doc/api_docs.txt"
   else
-    Goodall::Logger.output_path
+    Goodall.output_path
   end
 end
 

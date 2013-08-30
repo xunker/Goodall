@@ -4,9 +4,9 @@ require 'goodall/command_line_enable'
 Before do |scenario|
   if scenario.feature != $current_feature
     $current_feature = scenario.feature
-    Goodall::Logger.write("#{'-'*80}\nFeature: #{$current_feature.name}")
-    Goodall::Logger.write("\n")
+    Goodall.write("#{'-'*80}\nFeature: #{$current_feature.name}")
+    Goodall.write("\n")
   end
-  Goodall::Logger.write("Scenario: #{scenario.name}")
-  Goodall::Logger.write("\n")
+  Goodall.write("Scenario: #{scenario.name}")
+  Goodall.write("\n")
 end

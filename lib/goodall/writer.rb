@@ -1,4 +1,4 @@
-module Goodall
+class Goodall
   class Writer
     def initialize(file_path)
       @documentation_file = File.new(file_path, "w")

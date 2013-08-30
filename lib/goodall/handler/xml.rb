@@ -1,9 +1,9 @@
 require "goodall/handler/base"
 
-module Goodall
+class Goodall
   module Handler
     class Xml < Base
-      Goodall::Logger.register_handler :xml, self
+      Goodall.register_handler :xml, self
 
       def parse_payload(payload)
         if payload.class == String

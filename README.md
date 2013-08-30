@@ -292,7 +292,7 @@ return a pretty-printed string representing that data.
 **Register itself as a handler**: This is done by calling:
   
   ```ruby
-    Goodall::Logger.register_handler(:handler_name, self)
+    Goodall.register_handler(:handler_name, self)
   ```
 ..where *:handler_name* is a **symbol** for what type of data is being
 handled, and self is the **class** of the handler.

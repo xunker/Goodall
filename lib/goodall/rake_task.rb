@@ -1,6 +1,6 @@
 require 'goodall'
 require 'rails'
-module Goodall
+class Goodall
   class Railtie < Rails::Railtie
     railtie_name :goodall
 

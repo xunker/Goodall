@@ -1,4 +1,4 @@
-module Goodall
+class Goodall
   module Handler
     class Base
       def parse_payload(payload_string)

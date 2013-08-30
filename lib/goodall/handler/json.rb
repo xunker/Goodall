@@ -1,10 +1,10 @@
 require 'multi_json'
 require "goodall/handler/base"
 
-module Goodall
+class Goodall
   module Handler
     class Json < Base
-      Goodall::Logger.register_handler :json, self
+      Goodall.register_handler :json, self
 
       def parse_payload(payload)
         payload = if payload.class == String
