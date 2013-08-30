@@ -6,20 +6,6 @@ class Goodall
     class Json < Base
       Goodall.register_handler :json, self
 
-      @@json_adapter ||= MultiJson.default_adapter      
-
-      def self.pretty_print_supported?
-        [
-          :json_gem,
-          :nsjsonserialization,
-          :oj
-        ].include?(@@json_adapter)
-      end
-
-      unless pretty_print_supported?
-        Kernel.warn "[Warning] MultiJson is using a json gem that is not known to support pretty printing (#{@@json_adapter}). Your JSON output may not be nicely formatted."
-      end
-      
       def parse_payload(payload)
         payload = if payload.class == String
           # assue it's a string of json
@@ -33,9 +19,45 @@ class Goodall
           payload
         end
   
-        # remove prefix CR and return data
-        MultiJson.dump(payload, :pretty => true).sub(/^\n/, '')
-      
+        # detect "pretty" json by seeing if there are CRs in here
+        if (json = MultiJson.dump(payload)) =~ /\n/
+          json
+        else
+          pretty_print(json)
+          # json
+        end
+      end
+    
+
+    private
+
+      # We're doing this outselves because it's too unreliable detecting which parsers support pretty-print and whoch one don't. If this method is broken, at least it will be *consitently* broken.
+      def pretty_print(json)
+        return json if json.to_s.size < 1
+
+        str = json.to_s.gsub("},", "},\n").gsub("],", "],\n").gsub("{[", "{\n[").gsub("}]", "}\n]").gsub("[{", "[\n{").gsub("]}", "]\n}").gsub("{\"", "{\n\"").gsub("\"}", "\"\n}").gsub("\",\"", "\",\n\"")
+
+        if str.match(/[^\n]\}$/)
+          str.gsub!(/\}$/, "\n}")
+        end
+
+        output = []
+
+        indent_level = 0
+        str.split("\n").each do |s|
+          indent_level -= 1 if ["]", "}"].include?(s[0]) && indent_level > 0
+          output << ("  "*indent_level) + s
+          if ["{", "["].include?(s[-1])
+            indent_level += 1 
+            next
+          end
+
+          if ["{", "["].include?(s[0])
+            indent_level += 1 
+            next
+          end
+        end
+        output.join("\n")
       end
     end
   end
