@@ -20,6 +20,7 @@ write your tests.}
   spec.require_paths = ["lib"]
 
   spec.add_dependency "multi_json", ">= 1.6"
+  spec.add_dependency "tolerate_json"
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
