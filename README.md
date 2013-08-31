@@ -124,6 +124,9 @@ For cucumber, the best way is to have often-reused methods in each scenario, and
   Given /^I get \"(.+)\"$/ do |path|
     get(path)
     Goodall.document_request(:get, path)
+    # If this were a POST, we would so something like this:
+    #
+    #   Goodall.document_request(:post, path, posted_data)
   end
 
   Given /^the response should be valid json$/ do
@@ -167,9 +170,16 @@ for the get/post/put/delete/patch verbs:
   # spec_helper.rb
 
   def documented_get(*args)
+    
     Goodall.document_request(:get, args[0])
+    # If this were a POST, we would so something like this:
+    #
+    #   Goodall.document_request(:post, args[0], posted_data)
+
     get_response = get(args)
+
     Goodall.document_response(response.body)
+
     get_response
   end
 
@@ -300,8 +310,22 @@ handled, and self is the **class** of the handler.
 
 ## Methods
 
-Documented with rdoc.
+These are the method you will use most with Goodall.
 
+#### Goodall.document_request(method, path, payload=nil)
+
+Document a request.
+
+* :method  - a symbol of the verb: :get, :post, :put, :delete, :patch
+* :path    - a string of the path (URL/URI) of the request
+* :payload - the parameters sent, e.g. post body. Usually a hash. For things with no payload, like a GET, it can be nil.
+
+#### Goodalldocument_response(payload)
+
+Document a response.
+
+* :payload - the data returned from the request, e.g. response.body. "payload" will be run through the current handler and be pretty-printed to the output file.
+  
 ## Contributing
 
 1. Fork it
