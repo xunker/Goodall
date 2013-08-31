@@ -31,15 +31,17 @@ class Goodall
 
     private
 
-      # We're doing this outselves because it's too unreliable detecting which parsers support pretty-print and whoch one don't. If this method is broken, at least it will be *consitently* broken.
+      # We're doing this outselves because it's too unreliable detecting which
+      # parsers support pretty-print and which ones don't. If this method is
+      # broken, at least it will be *consistently* broken.
       def pretty_print(json)
         return json if json.to_s.size < 1
 
-        str = json.to_s.gsub("},", "},\n").gsub("],", "],\n").gsub("{[", "{\n[").gsub("}]", "}\n]").gsub("[{", "[\n{").gsub("]}", "]\n}").gsub("{\"", "{\n\"").gsub("\"}", "\"\n}").gsub("\",\"", "\",\n\"")
-
-        if str.match(/[^\n]\}$/)
-          str.gsub!(/\}$/, "\n}")
+        if json.match(/[^\n]\}$/)
+          json.gsub!(/\}$/, "\n}")
         end
+
+        str = json.to_s.gsub("},", "},\n").gsub("],", "],\n").gsub("{[", "{\n[").gsub("}]", "}\n]").gsub("[{", "[\n{").gsub("]}", "]\n}").gsub("{\"", "{\n\"").gsub("\"}", "\"\n}").gsub("\",\"", "\",\n\"")
 
         output = []
 
