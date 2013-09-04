@@ -1,0 +1,7 @@
+* 0.0.3
+
+  Goodall.document_response() now accepts an optional status argument.
+
+* 0.0.2
+
+  Extracted json formatter to separate gem.

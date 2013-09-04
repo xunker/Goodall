@@ -320,11 +320,12 @@ Document a request.
 * :path    - a string of the path (URL/URI) of the request
 * :payload - the parameters sent, e.g. post body. Usually a hash. For things with no payload, like a GET, it can be nil.
 
-#### Goodalldocument_response(payload)
+#### Goodalldocument_response(payload, status=nil)
 
 Document a response.
 
 * :payload - the data returned from the request, e.g. response.body. "payload" will be run through the current handler and be pretty-printed to the output file.
+* :status  - the http status of the response. Can be a string, symbol or integer. (e.g. 404, 500, :ok, "success", etc)
   
 ## Contributing
 

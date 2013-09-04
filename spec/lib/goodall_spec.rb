@@ -155,10 +155,21 @@ describe Goodall do
         "RESPONSE:\n#{formatted_payload}\n"
       end
 
+      let(:expected_write_with_status) do
+        "RESPONSE: ok\n#{formatted_payload}\n"
+      end
+
+
       it "must send a formatted response to the writer" do
         expect(mock_writer).to receive(:write).with(expected_write)
 
         klass.document_response(mock_payload)
+      end
+
+      it "must optionally accept a status code argument" do
+        expect(mock_writer).to receive(:write).with(expected_write_with_status)
+
+        klass.document_response(mock_payload, :ok)
       end
     end
 

@@ -74,14 +74,19 @@ class Goodall
   # Document a response.
   #
   # * +:payload - the data returned from the request, e.g. response.body. `payload` will be run through the current handler and be pretty-printed to the output file.
-  def self.document_response(payload)
+  def self.document_response(payload, status=nil)
     return unless enabled?
 
     if payload
       payload = current_handler.parse_payload(payload)
     end
 
-    str = "RESPONSE:\n#{payload}\n"
+    str = if status
+      "RESPONSE: #{status}"
+    else
+      "RESPONSE:"
+    end
+    str << "\n#{payload}\n"
 
     writer.write(str)
   end
