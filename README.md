@@ -240,7 +240,7 @@ automatically set the output file and triggers the tests.
 
 ```ruby
   # Rakefile
-  require 'goodall/rake_task'
+  require 'goodall/rake_task' if %w[development test].include? Rails.env
 ```
 
 This unlocks the following rake commands:
