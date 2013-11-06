@@ -16,6 +16,7 @@ describe Goodall do
 
   after(:each) do
     Goodall.disable
+    Goodall.skipping_off!
   end
 
   describe ".output_path" do
@@ -39,6 +40,19 @@ describe Goodall do
       klass.disable
 
       expect(klass.enabled).to be_false
+    end
+  end
+
+  describe ".skipping?" do
+    it "must be true if goodall is in skipping mode" do
+      klass.skipping_on!
+
+      expect(klass.skipping?).to be_true
+    end
+    it "must be false if goodall is in not skipping mode" do
+      klass.skipping_off!
+
+      expect(klass.skipping?).to be_false
     end
   end
 
@@ -216,5 +230,38 @@ describe Goodall do
         }.to raise_error(Goodall::HandlerNotRegisteredError)
       end
     end
+  end
+
+  describe ".should_document?" do
+
+    context "enabled is true" do
+      before(:each) { klass.enable }
+
+      context "skipping is false" do
+        before(:each) { klass.skipping=false }
+
+        it "should be true" do
+          expect(klass.should_document?).to be_true
+        end
+      end
+
+      context "skipping is true" do
+        before(:each) { klass.skipping=true }
+
+        it "should be false" do
+          expect(klass.should_document?).to be_false
+        end
+      end
+
+    end
+
+    context "enabled is false" do
+      before(:each) { klass.disable }
+
+      it "should be false" do
+        expect(klass.should_document?).to be_false
+      end
+    end
+
   end
 end

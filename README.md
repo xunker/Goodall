@@ -143,6 +143,18 @@ The steps "I get (.+)" and "the response should be valid json" are steps I
 will use in almost every scenario, so it is the perfect place for the Goodall
 calls. Using Goodall in these frequently used steps is key for ease-of-use.
 
+You can tell Goodall to not document a cucumber scenario by using the
+`@dont-document` tag:
+
+```Gherkin
+  Scenario: this will be documented
+    Given some steps
+
+  @dont-document
+  Scenario: this will not be documented
+    Given some steps
+```
+
 _IMPORTANT NOTE_: Using the cucumber helpers, Goodall will NOT log unless
 executed via the rake task "rake cucumber:document". To force Goodall to
 log, please set the environment variable 'ENABLE_GOODALL' to a non-nil

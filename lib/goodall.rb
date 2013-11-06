@@ -9,6 +9,7 @@ class Goodall
   include Singleton
 
   @@enabled = false                #:nodoc:
+  @@skipping = false                #:nodoc:
   @@output_path = './api_docs.txt' #:nodoc:
   @@registered_handlers = {}       #:nodoc:
   
@@ -47,6 +48,26 @@ class Goodall
     self.enabled = false
   end
 
+  # Flag to denote that documenting temporarily disabled?
+  def self.skipping?
+    @@skipping
+  end
+
+  # Enable the temporarily disable documenting flag
+  def self.skipping_on!
+    self.skipping = true
+  end
+
+  # Disable the temporarily disable documenting flag
+  def self.skipping_off!
+    self.skipping = false
+  end
+
+  # set the skipping value explicity
+  def self.skipping=(val)
+    @@skipping=!!val
+  end
+
   # write to the currently open output file
   def self.write(str)
     writer.write(str) if enabled?
@@ -58,7 +79,7 @@ class Goodall
   # * +:path+   - a string of the path (URL/URI) of the request
   # * +:payload+ - the parameters sent, e.g. post body. Usually a hash.
   def self.document_request(method, path, payload=nil)
-    return unless enabled?
+    return unless should_document?
 
     str = "#{method.to_s.upcase}: #{path}"
 
@@ -75,7 +96,7 @@ class Goodall
   #
   # * +:payload - the data returned from the request, e.g. response.body. `payload` will be run through the current handler and be pretty-printed to the output file.
   def self.document_response(payload, status=nil)
-    return unless enabled?
+    return unless should_document?
 
     if payload
       payload = current_handler.parse_payload(payload)
@@ -125,6 +146,11 @@ class Goodall
   # [ [ :identifier, class ], [ :identifier, class ] ]
   def self.registered_handlers
     @@registered_handlers.map{|k,v| [k,v]}
+  end
+
+  # Is goodall enabled and are NOT in skipping mode?
+  def self.should_document?
+    enabled? && !skipping?
   end
 
 private
