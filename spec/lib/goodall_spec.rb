@@ -90,16 +90,12 @@ describe Goodall do
         before(:each) do
           klass.enable
 
-          mock_handler.stub(
-            :parse_payload
-          ).with(
-            mock_payload
-          ).and_return(
-            formatted_payload
-          )
+          expect(mock_handler).to receive(:parse_payload).
+            with(mock_payload).
+            and_return(formatted_payload)
 
-          klass.stub(:current_handler).and_return(mock_handler)
-          klass.stub(:writer).and_return(mock_writer)
+          expect(klass).to receive(:current_handler).and_return(mock_handler)
+          expect(klass).to receive(:writer).and_return(mock_writer)
         end
 
         let(:expected_write) do
@@ -153,16 +149,12 @@ describe Goodall do
       before(:each) do
         klass.enable
 
-        mock_handler.stub(
-          :parse_payload
-        ).with(
-          mock_payload
-        ).and_return(
-          formatted_payload
-        )
+        expect(mock_handler).to receive(:parse_payload).
+          with(mock_payload).
+          and_return(formatted_payload)
 
-        klass.stub(:current_handler).and_return(mock_handler)
-        klass.stub(:writer).and_return(mock_writer)
+        expect(klass).to receive(:current_handler).and_return(mock_handler)
+        expect(klass).to receive(:writer).and_return(mock_writer)
       end
 
       let(:expected_write) do
