@@ -34,12 +34,12 @@ describe Goodall do
     it "must be true if goodall is enabled" do
       klass.enable
 
-      expect(klass.enabled).to be_true
+      expect(klass.enabled).to be_truthy
     end
     it "must be false if goodall is not enabled" do
       klass.disable
 
-      expect(klass.enabled).to be_false
+      expect(klass.enabled).to be_falsey
     end
   end
 
@@ -47,12 +47,12 @@ describe Goodall do
     it "must be true if goodall is in skipping mode" do
       klass.skipping_on!
 
-      expect(klass.skipping?).to be_true
+      expect(klass.skipping?).to be_truthy
     end
     it "must be false if goodall is in not skipping mode" do
       klass.skipping_off!
 
-      expect(klass.skipping?).to be_false
+      expect(klass.skipping?).to be_falsey
     end
   end
 
@@ -241,7 +241,7 @@ describe Goodall do
         before(:each) { klass.skipping=false }
 
         it "should be true" do
-          expect(klass.should_document?).to be_true
+          expect(klass.should_document?).to be_truthy
         end
       end
 
@@ -249,7 +249,7 @@ describe Goodall do
         before(:each) { klass.skipping=true }
 
         it "should be false" do
-          expect(klass.should_document?).to be_false
+          expect(klass.should_document?).to be_falsey
         end
       end
 
@@ -259,7 +259,7 @@ describe Goodall do
       before(:each) { klass.disable }
 
       it "should be false" do
-        expect(klass.should_document?).to be_false
+        expect(klass.should_document?).to be_falsey
       end
     end
 
